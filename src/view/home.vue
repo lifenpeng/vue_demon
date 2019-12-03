@@ -8,7 +8,7 @@
 <script>
 
 import api from '../api/login_api';
-
+import local from '../common/localStorage';
 export default {
     name:'home',
     created:()=>{
@@ -16,7 +16,7 @@ export default {
             username:'lifenpeng',
             password:'1170275451'
         }).then((res)=>{
-            console.log(res);
+            local.set(res.data);
         })
     },
     data:()=>{

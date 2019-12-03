@@ -1,16 +1,5 @@
 const axios = require('axios');
-
-axios.defaults.headers['Content-Type'] = 'application/x-www-form-urlencoded';
-
-axios.interceptors.request.use(function(config){
-    console.log(config);
-    if(config.method=='post'){
-        config.data.token = '1111111';
-    }
-    return config;
-},function(error){
-    console.error(error);
-})
+import local from '../common/localStorage';
 
 let setting = process.env.NODE_ENV === 'development'?'/api/':'/';
 
@@ -23,5 +12,25 @@ const post = function(url,data){
         })
     })
 }
+
+axios.interceptors.request.use(function(config){
+    if(config.method=='post'){
+        config.data.token = local.get().token;
+    }
+    return config;
+},function(error){
+    console.error(error);
+})
+
+axios.interceptors.response.use(function(res){
+    if(res.status==200&&res.data.status){
+        return res.data;
+    }else{
+        return Promise.reject(res.data.message);
+    }
+},function(err){
+    return Promise.reject(err);
+})
+
 
 export default post;
